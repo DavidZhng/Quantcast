@@ -1,5 +1,10 @@
-import most_active_cookie
 import pytest
+from importlib.util import spec_from_loader, module_from_spec
+from importlib.machinery import SourceFileLoader
+
+spec = spec_from_loader("most_active_cookie", SourceFileLoader("most_active_cookie", "most_active_cookie"))
+most_active_cookie = module_from_spec(spec)
+spec.loader.exec_module(most_active_cookie)
 
 def test_main_no_args(capsys):
 	with pytest.raises(SystemExit) as error:
@@ -38,6 +43,7 @@ def test_main_non_csv_file(capsys):
 		most_active_cookie.main(['test.jpg', '-d', '2018-12-09'])
 	assert error.value.code == 1
 	out, err = capsys.readouterr()
+	print(out)
 	assert out == ''
 	assert err == 'Must use a csv file\n'
 
